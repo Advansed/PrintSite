@@ -1,0 +1,77 @@
+.i-content{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+}
+  
+.h-100 {
+    height: 100%;
+}
+
+.w-100 {
+    width: 100%;
+}
+.item-1 {
+    border: 3px solid blue;
+}
+
+.icon-1 {
+    width: 2em;
+    height: 2em;
+}
+
+.left-1 {
+    display: block;
+    width: 270px;
+    height: 100;
+}
+
+.right-1 {
+    position: relative;
+    float: right;
+    display: block;
+    width: 270px;
+    height: 100;
+}
+
+
+.hide {
+    display: none;        
+}
+
+.icon-2 {
+    width: 1.5em;
+    height: 1.5em;
+    margin-top: 0.5em;
+    margin-left: 1em;
+}
+
+.img-1 {
+    height: 5em;
+    width: 10em;
+}
+
+.font-10 {
+    font: 10px arial
+}
+
+.font-12 {
+    font: 12px arial
+}
+
+.font-14 {
+    font: 14px arial
+}
+
+.font-16 {
+    font: 16px arial
+}
+.font-18 {
+    font: 18px arial
+}
+
+.p-col {
+    display: block;
+    border: 1px solid darkgrey;
+    width: 100px;
+}

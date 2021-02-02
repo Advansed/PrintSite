@@ -1,0 +1,7 @@
+{
+  "name": "printSite",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
