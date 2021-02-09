@@ -23,17 +23,22 @@
 .left-1 {
     display: block;
     width: 270px;
-    height: 100;
+    height: 100%;
 }
 
 .right-1 {
     position: relative;
     float: right;
     display: block;
-    width: 270px;
-    height: 100;
+    width: 340px;
+    height: 800px;
+    overflow: scroll;
 }
 
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
 
 .hide {
     display: none;        

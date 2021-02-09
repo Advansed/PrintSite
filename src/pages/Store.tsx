@@ -36,6 +36,7 @@ export const i_state = {
     papers:         [],
     sizes:          [],
     prices:         [],
+    docs:           [],
 }
 
 export async function   getData(method : string, params){
@@ -117,6 +118,7 @@ const           rootReducer = combineReducers({
     papers:         reducers[5],
     sizes:          reducers[6],
     prices:         reducers[7],
+    docs:           reducers[8],
 
 })
 
@@ -190,6 +192,10 @@ export async function  exec(){
 
     res = await getData("method", { method: "prices"})
     Store.dispatch( {type: "prices", prices: res[0]})
+
+    res = await getData("method", { method: "orders"})
+    Store.dispatch( {type: "docs", docs: res[0]})
+    console.log(res[0])
 
 }
 

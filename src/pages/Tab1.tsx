@@ -1,38 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { IonAlert, IonButton, IonCardSubtitle, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonImg, IonInput, IonItem
     , IonLabel, IonLoading, IonModal, IonPage, IonRow, IonText, IonTitle, IonToolbar } from '@ionic/react';
-import { cameraOutline, closeCircleOutline, createOutline, imagesOutline, logoChrome, logoReddit, personAddOutline } from 'ionicons/icons';
+import { cameraOutline, closeCircleOutline, copyOutline, createOutline, documentOutline, imagesOutline, logoChrome, logoReddit, personAddOutline, resizeOutline } from 'ionicons/icons';
 import { getData, Store } from './Store';
 import { AddressSuggestions } from 'react-dadata';
-import { defineCustomElements } from '@ionic/pwa-elements/loader';
-import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
-import { MapAPI } from '../components/Functions'
+
+import { Docs, MapAPI, Papers, Sizes, takePicture } from '../components/Functions'
 import MaskedInput from '../mask/reactTextMask';
 import 'react-dadata/dist/react-dadata.css';
 import './Tab1.css';
 
-const { Camera }  = Plugins
+
 
 const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-defineCustomElements(window)
 
-
-async function    takePicture() {
-  const image = await Camera.getPhoto({
-    quality: 90,
-    allowEditing: false,
-    resultType: CameraResultType.Base64,
-    source: CameraSource.Photos
-  });
-
-
-  return "data:image/png;base64," + (image.base64String as string)
-
-}
 
 const Tab1: React.FC = () => {
   const [marks,     setMarks]     = useState<any>([])
+  const [docs,      setDocs]      = useState<any>([])
   const [franch,    setFranch]    = useState<any>()
   const [serv,      setServ]      = useState<any>();
   const [services,  setServices]  = useState<any>([])
@@ -40,12 +26,15 @@ const Tab1: React.FC = () => {
   const [alert,     setAlert]     = useState(false)
   const [modal,     setModal]     = useState(false)
   const [loading,   setLoading]   = useState(false)
+  const [name,      setName]      = useState("docs")
 
   async function load(){
-  let res = Store.getState().services;
-  if(franch !== undefined){
-    let jarr: any = []
-    let mrks: any = []
+    let res = Store.getState().services;
+    let res2 = Store.getState().docs;
+    if(franch !== undefined){
+    let jarr:   any = []
+    let dcs:    any = []
+    let mrks:   any = []
     let ind = 0
     res.forEach((e)=>{
       if(e.franchaise === franch.id){
@@ -56,8 +45,22 @@ const Tab1: React.FC = () => {
     })
     setServices(jarr)
     setMarks(mrks)
+
+    res2.forEach((e) => {
+      console.log(e)
+      console.log(jarr)
+      if(jarr.findIndex(function(b) { 
+        return b.id === e.service_id; 
+      }) >= 0){
+          e.label = labels[ind++ % labels.length]
+          dcs = [...dcs, {name: e.Документ, label: e.label, coord:{lat: e.lat, lng: e.lng}}]  
+       }
+    })
+    setDocs(dcs)
+    console.log(dcs)
   } else {
     let mrks: any = []
+    let dcs: any = []
     let ind = 0
     let jarr: any = [];
     res.forEach((e)=>{
@@ -67,6 +70,13 @@ const Tab1: React.FC = () => {
     })
     setServices(jarr)
     setMarks(mrks)
+    ind = 0;
+    res2.forEach((e) => {
+      e.label = labels[ind++ % labels.length]
+      dcs = [...dcs, {name: e.Документ, label: e.label, coord:{lat: e.lat, lng: e.lng}}]  
+    })
+    setDocs(dcs)
+    console.log(dcs)
   }
   }  
   
@@ -295,14 +305,20 @@ const Tab1: React.FC = () => {
                 }}
             />
           </IonItem>
-          <IonButton
-            expand="block"
-            onClick={ () => setAlert(true) }
-          >
-            Удалить
-          </IonButton>
+          <IonRow>
+            <IonCol></IonCol>
+            <IonCol>
+              <IonButton
+                expand="block"
+                onClick={ () => setAlert(true) }
+              >
+                Удалить
+              </IonButton>
+            </IonCol>
+          </IonRow>
         </div>
         <div className={ edit ? "hide" : "" }>
+
           <IonItem onClick={()=>{
             setEdit(true)  
           }}>
@@ -497,16 +513,16 @@ const Tab1: React.FC = () => {
               </IonRow>
             </div>
           <IonRow>
-            <IonCol size="2"></IonCol>
-            <IonCol size="8">
+            <IonCol>
               <IonButton
                 expand = "block"
                 onClick={()=> setModal(true) }
               >
-                Установить цены
+                Цены
               </IonButton>
             </IonCol>
-            <IonCol size="2"></IonCol>
+            <IonCol>
+            </IonCol>
           </IonRow>
             
         </div>
@@ -637,6 +653,21 @@ const Tab1: React.FC = () => {
 
     return elem;
   }
+
+  function Right(): JSX.Element {
+    let elem = <></>
+
+    switch(name) {
+
+      case "docs" :   elem  =  <Docs />;       break;
+      case "papers":  elem  =  <Papers />;  break;
+      case "sizes":   elem  =  <Sizes />;       break;
+
+    }
+
+    return elem;
+  }
+
   return (
     <IonPage>
       <IonLoading isOpen={ loading }/>
@@ -685,7 +716,25 @@ const Tab1: React.FC = () => {
             <IonIcon icon={ imagesOutline }></IonIcon>
           </IonButton>
 
-          <IonTitle>Принт сервис </IonTitle>
+          <IonButton slot="end"
+            onClick={()=> setName("docs")}
+          >
+            <IonIcon icon={ documentOutline }></IonIcon>
+          </IonButton>
+
+          <IonButton slot="end"
+            onClick={()=> setName("papers")}
+          >
+            <IonIcon icon={ copyOutline }></IonIcon>
+          </IonButton>
+
+          <IonButton slot="end"
+            onClick={()=> setName("sizes")}
+          >
+            <IonIcon icon={ resizeOutline }></IonIcon>
+          </IonButton>
+
+          <IonTitle> Принт сервис </IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -700,10 +749,11 @@ const Tab1: React.FC = () => {
             <MapAPI
               center = { center }
               marks = { marks }
+              docs = { docs }
             />
           </div>
           <div className = "right-1">
-            
+            <Right />  
           </div>
         </div>
       </IonContent>
